@@ -46,6 +46,42 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
         }
 
+        [HttpGet("search")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsSearch(String value)
+        {
+            var products = _productsServices.GetProductsSearch(value);
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+        [HttpGet("desc")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsDescPrice()
+        {
+            var products = _productsServices.GetProductsDescPrice();
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+        [HttpGet("asc")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsAscPrice()
+        {
+            var products = _productsServices.GetProductsAscPrice();
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+        [HttpGet("category")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsByCategory(String category)
+        {
+            var products = _productsServices.GetProductsByCategory(category);
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+        [HttpGet("price")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsByPrice(int price1, int price2)
+        {
+            var products = _productsServices.GetProductsByPrice(price1, price2);
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+
         [HttpGet("{id}", Name ="GetProduct")]
         public ActionResult GetProduct(int id)
         {

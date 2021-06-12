@@ -53,6 +53,37 @@ namespace Shop.Services
                 .ToList<Product>();
         }
 
+        public List<Product> GetProductsAscPrice()
+        {
+            var _products = _context.Products.OrderBy(p => p.Price).ToList();
+            return _products;
+        }
+
+        public List<Product> GetProductsByCategory(string category)
+        {
+            var _products = _context.Products.Where(p => p.Category == category).ToList();
+            return _products;
+        }
+
+        public List<Product> GetProductsByPrice(int price1, int price2)
+        {
+            var _products = _context.Products.Where(p => p.Price >= price1 && p.Price <= price2).ToList();
+            return _products;
+        }
+
+        public List<Product> GetProductsDescPrice()
+        {
+            var _products = _context.Products.OrderByDescending(p => p.Price).ToList();
+            return _products;
+        }
+
+        public List<Product> GetProductsSearch(string value)
+        {
+            var _products = _context.Products.Where(p => p.Name.Contains(value)).ToList();
+            return _products;
+            
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

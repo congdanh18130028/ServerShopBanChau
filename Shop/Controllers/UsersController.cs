@@ -24,19 +24,21 @@ namespace Shop.Controllers
         private readonly ICartServices _cartServices;
         private readonly IMapper _mapper;
 
-        public UsersController(IUsersServices userServices, ICartServices cartServices, IMapper mapper )
-        {   
+        public UsersController(IUsersServices userServices, ICartServices cartServices, IMapper mapper)
+        {
             _usersServices = userServices;
             _cartServices = cartServices;
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult<IEnumerable<UserReadDto>> GetUsers()
         {
             var users = _usersServices.GetUsers();
             return Ok(_mapper.Map<IEnumerable<UserReadDto>>(users));
         }
+
         [Authorize]
         [HttpGet("{id}", Name ="GetUser")]
         public ActionResult GetUser(int id)
@@ -72,7 +74,7 @@ namespace Shop.Controllers
             return CreatedAtRoute(nameof(GetUser), new { id = userReadDto.Id }, userReadDto);
         }
 
-
+        [Authorize]
         [HttpPatch("{id}")]
         public ActionResult UpdateUser(int id, [FromBody] JsonPatchDocument<UserUpdateDto> patch)
         {
@@ -95,6 +97,7 @@ namespace Shop.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public ActionResult DeleteUser(int id)
         {

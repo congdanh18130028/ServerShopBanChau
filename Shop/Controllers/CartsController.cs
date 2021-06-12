@@ -32,7 +32,7 @@ namespace Shop.Controllers
             return Ok(cartId);
         }
 
-
+        [Authorize]
         [HttpGet("{cartId}")]
         public ActionResult<IEnumerable<CartItemReadDto>> GetCartItems(int cartId)
         {
@@ -40,13 +40,15 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<CartItemReadDto>>(cartItems));
         }
 
-        [HttpGet("{id}, {cartId}", Name = "GetCartItem")]
+        [Authorize]
+        [HttpGet(Name = "GetCartItem")]
         public ActionResult GetCartItem(int id, int cartId)
         {
             var cartItem = _cartServices.GetItem(id, cartId);
             return Ok(_mapper.Map<CartItemReadDto>(cartItem));
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult AddCartItem(CartItemCreateDto cartItem)
         {
@@ -58,6 +60,7 @@ namespace Shop.Controllers
 
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult DeleteCartItem(int id)
         {
@@ -65,7 +68,8 @@ namespace Shop.Controllers
             _cartServices.SaveChanges();
             return NoContent();
         }
-       
+
+        [Authorize]
         [HttpPatch("increase/{id}")]
         public ActionResult IncreaseQuantityItem(int id)
         {
@@ -74,7 +78,7 @@ namespace Shop.Controllers
             return NoContent();
         }
 
-
+        [Authorize]
         [HttpPatch("decrease/{id}")]
         public ActionResult DecreaseQuantityItem(int id)
         {
@@ -83,6 +87,7 @@ namespace Shop.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpGet("totalPrice")]
         public ActionResult totalPrice(int cartId, int ship, int discount)
         {

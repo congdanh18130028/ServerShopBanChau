@@ -14,5 +14,10 @@ namespace Shop.Services
         public void UppdateProduct(Product product);
         public void DeleteProduct(Product product);
         public void SaveChanges();
+        public List<Product> GetProductsSearch(string value);
+        public List<Product> GetProductsByCategory(string category);
+        public List<Product> GetProductsByPrice(int price1, int price2);
+        public List<Product> GetProductsDescPrice();
+        public List<Product> GetProductsAscPrice();
     }
 }

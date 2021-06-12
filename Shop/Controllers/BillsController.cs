@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Dtos;
@@ -25,7 +26,7 @@ namespace Shop.Controllers
             _mapper = mapper;
         }
 
-        
+        [Authorize]
         [HttpPost]
         public ActionResult AddBill(BillCreateDto bill)
         {
@@ -36,24 +37,18 @@ namespace Shop.Controllers
 
             int billId = billReadDto.Id;
             var cartId = _cartServices.getCartId(billReadDto.UserId);
-            if (cartId != 0)
-            {
-                var cartItems = _cartServices.GetItems(cartId);
-                _billsServices.AddBillDetails(billId, cartItems);
-                _billsServices.SaveChanges();
 
-                _cartServices.ClearCartItems(cartId);
-                _billsServices.SaveChanges();
+            var cartItems = _cartServices.GetItems(cartId);
+            _billsServices.AddBillDetails(billId, cartItems);
+            _billsServices.SaveChanges();
 
-                return CreatedAtRoute(nameof(GetBill), new { id = billReadDto.Id }, billReadDto);
-            }else
-            {
-                return BadRequest();
-            }
-           
+            _cartServices.ClearCartItems(cartId);
+            _billsServices.SaveChanges();
 
+            return CreatedAtRoute(nameof(GetBill), new { id = billReadDto.Id }, billReadDto);
         }
 
+        [Authorize]
         [HttpGet("{id}", Name = "GetBill")]
         public ActionResult GetBill(int id)
         {
@@ -65,13 +60,15 @@ namespace Shop.Controllers
             return NotFound($"Bill with id: {id} was not found");
         }
 
+        [Authorize]
         [HttpGet]
-        public ActionResult<IEnumerable<BillReadDto>>GetBillsByState(int userId, int state)
+        public ActionResult<IEnumerable<BillReadDto>> GetBillsByState(int userId, int state)
         {
             var list = _billsServices.GetBillsByState(userId, state);
             return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("state/{state}")]
         public ActionResult<IEnumerable<BillReadDto>> GetBillsByStateForAdmin(int state)
         {
@@ -79,6 +76,7 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("state")]
         public ActionResult ChangesState(int billId, int state)
         {
