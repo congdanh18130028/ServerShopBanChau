@@ -55,31 +55,51 @@ namespace Shop.Services
 
         public List<Product> GetProductsAscPrice()
         {
-            var _products = _context.Products.OrderBy(p => p.Price).ToList();
+            var _products = _context.Products.OrderBy(p => p.Price).Include(p => p.ImgPath).ToList();
             return _products;
         }
 
         public List<Product> GetProductsByCategory(string category)
         {
-            var _products = _context.Products.Where(p => p.Category == category).ToList();
+            var _products = _context.Products.Where(p => p.Category == category).Include(p => p.ImgPath).ToList();
             return _products;
         }
 
         public List<Product> GetProductsByPrice(int price1, int price2)
         {
-            var _products = _context.Products.Where(p => p.Price >= price1 && p.Price <= price2).ToList();
+            var _products = _context.Products.Where(p => p.Price >= price1 && p.Price <= price2).Include(p => p.ImgPath).ToList();
             return _products;
         }
 
-        public List<Product> GetProductsDescPrice()
+        public List<Product> GetProductsCategoryAscPrice(string category)
         {
-            var _products = _context.Products.OrderByDescending(p => p.Price).ToList();
+            var _products = _context.Products.Where(p => p.Category == category).OrderBy(p => p.Price).Include(p => p.ImgPath).ToList();
             return _products;
         }
+
+        public List<Product> GetProductsCategoryByPrice(string category, int price1, int price2)
+        {
+            var _products = _context.Products.Where(p => p.Price >= price1 && p.Price <= price2 && p.Category == category).Include(p => p.ImgPath).ToList();
+            return _products;
+        }
+
+        public List<Product> GetProductsCategoryDescPrice(string category)
+        {
+            var _products = _context.Products.Where(p => p.Category == category).OrderByDescending(p => p.Price).Include(p => p.ImgPath).ToList();
+            return _products;
+        }
+
+       
+        public List<Product> GetProductsDescPrice()
+        {
+            var _products = _context.Products.OrderByDescending(p => p.Price).Include(p => p.ImgPath).ToList();
+            return _products;
+        }
+
 
         public List<Product> GetProductsSearch(string value)
         {
-            var _products = _context.Products.Where(p => p.Name.Contains(value)).ToList();
+            var _products = _context.Products.Where(p => p.Name.Contains(value)).Include(p => p.ImgPath).ToList();
             return _products;
             
         }

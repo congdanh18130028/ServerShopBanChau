@@ -60,10 +60,26 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
         }
 
+        [HttpGet("category/desc")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsCategoryDescPrice(String category)
+        {
+            var products = _productsServices.GetProductsCategoryDescPrice(category);
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+
+
         [HttpGet("asc")]
         public ActionResult<IEnumerable<ProductReadDto>> GetProductsAscPrice()
         {
             var products = _productsServices.GetProductsAscPrice();
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+        [HttpGet("category/asc")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsCategoryAscPrice(String category)
+        {
+            var products = _productsServices.GetProductsCategoryAscPrice(category);
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
         }
 
@@ -78,6 +94,13 @@ namespace Shop.Controllers
         public ActionResult<IEnumerable<ProductReadDto>> GetProductsByPrice(int price1, int price2)
         {
             var products = _productsServices.GetProductsByPrice(price1, price2);
+            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
+        }
+
+        [HttpGet("category/price")]
+        public ActionResult<IEnumerable<ProductReadDto>> GetProductsCategoryByPrice(String category, int price1, int price2)
+        {
+            var products = _productsServices.GetProductsCategoryByPrice(category, price1, price2);
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
         }
 
