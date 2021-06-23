@@ -74,6 +74,24 @@ namespace Shop.Controllers
             return CreatedAtRoute(nameof(GetUser), new { id = userReadDto.Id }, userReadDto);
         }
 
+        [HttpPost("createAdmin")]
+        public ActionResult AddAdmin()
+        {
+            var user = new UserCreateDto();
+            user.Name = "Admin";
+            user.Email = "admin";
+            user.Password = "admin";
+            user.Role = "Admin";
+            user.Address = "";
+            user.Phone = "";
+
+            var _user = _mapper.Map<User>(user);
+            _usersServices.AddUser(_user);
+            _usersServices.SaveChanges();
+            var userReadDto = _mapper.Map<UserReadDto>(_user);
+            return CreatedAtRoute(nameof(GetUser), new { id = userReadDto.Id }, userReadDto);
+        }
+
         [Authorize]
         [HttpPatch("{id}")]
         public ActionResult UpdateUser(int id, [FromBody] JsonPatchDocument<UserUpdateDto> patch)

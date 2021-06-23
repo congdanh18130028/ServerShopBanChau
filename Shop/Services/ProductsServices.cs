@@ -16,6 +16,16 @@ namespace Shop.Services
         {
             _context = context;
         }
+
+        public void AddCaterory(Category category)
+        {
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(category));
+            }
+            _context.Categories.Add(category);
+        }
+
         public void AddProduct(Product product)
         {
             if (product == null)
@@ -35,6 +45,12 @@ namespace Shop.Services
             }
             _context.FilePaths.RemoveRange(product.ImgPath);
             _context.Products.Remove(product);
+        }
+
+        public List<Category> GetCategories()
+        {
+            var categories = _context.Categories.ToList<Category>();
+            return categories;
         }
 
         public Product GetProduct(int id)

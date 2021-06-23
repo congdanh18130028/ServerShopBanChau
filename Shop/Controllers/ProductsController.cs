@@ -90,6 +90,22 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
         }
 
+        [HttpPost("category")]
+        public ActionResult AddCategory([FromForm]String categoryName)
+        {
+            var category = new Category(categoryName);
+            _productsServices.AddCaterory(category);
+            _productsServices.SaveChanges();
+            return Ok();
+        }
+
+        [HttpGet("categories")]
+        public ActionResult<IEnumerable<Category>> GetCategories()
+        {
+            var categories = _productsServices.GetCategories();
+            return Ok(categories);
+        }
+
         [HttpGet("price")]
         public ActionResult<IEnumerable<ProductReadDto>> GetProductsByPrice(int price1, int price2)
         {

@@ -23,5 +23,7 @@ namespace Shop.DataAccess
         public DbSet<Bill> Bills { get; set; }
 
         public DbSet<BillDetails> BillDetails { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
     }
 }

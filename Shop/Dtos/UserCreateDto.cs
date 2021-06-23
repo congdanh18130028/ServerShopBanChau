@@ -13,5 +13,7 @@ namespace Shop.Dtos
         public String Role { get; set; } = "Customer";
         public String Email { get; set; }
         public String Password { get; set; }
+
+        
     }
 }

@@ -25,5 +25,6 @@ namespace Shop.Models
         [Required]
         public int Price { get; set; }
 
+
     }
 }

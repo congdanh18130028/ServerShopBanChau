@@ -10,7 +10,7 @@ using Shop.DataAccess;
 namespace Shop.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20210607035224_InitialCreate")]
+    [Migration("20210623033323_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,6 +115,21 @@ namespace Shop.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("CartItems");
+                });
+
+            modelBuilder.Entity("Shop.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Shop.Models.FilePath", b =>

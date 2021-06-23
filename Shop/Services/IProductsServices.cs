@@ -22,5 +22,7 @@ namespace Shop.Services
         public List<Product> GetProductsCategoryDescPrice(string category);
         public List<Product> GetProductsCategoryAscPrice(string category);
         public List<Product> GetProductsCategoryByPrice(string category, int price1, int price2);
+        public void AddCaterory(Category category);
+        public List<Category> GetCategories();
     }
 }
