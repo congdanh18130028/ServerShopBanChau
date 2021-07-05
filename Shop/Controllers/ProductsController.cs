@@ -91,7 +91,7 @@ namespace Shop.Controllers
         }
 
         [HttpPost("category")]
-        public ActionResult AddCategory([FromForm]String categoryName)
+        public ActionResult AddCategory(String categoryName)
         {
             var category = new Category(categoryName);
             _productsServices.AddCaterory(category);
@@ -130,6 +130,63 @@ namespace Shop.Controllers
                 return Ok(_mapper.Map<ProductReadDto>(product));
             }
             return NotFound($"Product with id: {id} was not found");
+        }
+
+        [HttpPost("img")]
+        public async Task<ActionResult> AddImg([FromForm] FileUpload file)
+        {
+            var fileUpload = file.File;
+            var _link = "";
+            FileStream fs = null;
+            if (fileUpload.Length > 0)
+            {
+                String foldername = "firebaseFiles";
+                String path = Path.Combine(_env.WebRootPath, $"images/{foldername}");
+                if (Directory.Exists(path))
+                {
+                    using (fs = new FileStream(Path.Combine(path, fileUpload.FileName), FileMode.Create))
+                    {
+                        await fileUpload.CopyToAsync(fs);
+                    }
+                    fs = new FileStream(Path.Combine(path, fileUpload.FileName), FileMode.Open);
+
+                }
+                else
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(apiKey));
+                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+                var cancellation = new CancellationTokenSource();
+                var upload = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                        ThrowOnCancel = true
+                    })
+                    .Child("assets")
+                    .Child($"{fileUpload.FileName}.{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")}")
+                    .PutAsync(fs, cancellation.Token);
+                try
+                {
+                    _link = await upload;
+                    FilePath filePath = new FilePath(_link);
+
+                    
+                    return Ok(filePath);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+
+                
+            }
+            return BadRequest();
         }
 
         [HttpPost]
@@ -182,6 +239,7 @@ namespace Shop.Controllers
                 try
                 {
                     _link = await upload;
+                    
                     var filePath = new FilePath(_link);
                     List<FilePath> listFilePath = new List<FilePath>();
                     listFilePath.Add(filePath);
@@ -218,6 +276,14 @@ namespace Shop.Controllers
             }
             _mapper.Map(product, _product);
             _productsServices.UppdateProduct(_product);
+            _productsServices.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpPatch("img/{id}")]
+        public ActionResult UpdateImgProduct(int id, [FromForm]String link)
+        {
+            _productsServices.UpadateImgProduct(id, link);
             _productsServices.SaveChanges();
             return NoContent();
         }

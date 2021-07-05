@@ -125,9 +125,16 @@ namespace Shop.Services
             _context.SaveChanges();
         }
 
+        public void UpadateImgProduct(int id, string link)
+        {
+            var filePath = _context.FilePaths.Where(f => f.ProductId == id).FirstOrDefault();
+            filePath.Path = link;
+            _context.FilePaths.Update(filePath);
+        }
+        
+
         public void UppdateProduct(Product product)
         {
-            _context.FilePaths.UpdateRange(product.ImgPath);
             _context.Products.Update(product);
         }
     }

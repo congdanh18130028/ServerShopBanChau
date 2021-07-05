@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\C#\\Shop\\Shop\\Shop.csproj": {}
+    "D:\\C#\\Shop\\Shop\\Shop.csproj": {}
   },
   "projects": {
-    "E:\\C#\\Shop\\Shop\\Shop.csproj": {
+    "D:\\C#\\Shop\\Shop\\Shop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\C#\\Shop\\Shop\\Shop.csproj",
+        "projectUniqueName": "D:\\C#\\Shop\\Shop\\Shop.csproj",
         "projectName": "Shop",
-        "projectPath": "E:\\C#\\Shop\\Shop\\Shop.csproj",
+        "projectPath": "D:\\C#\\Shop\\Shop\\Shop.csproj",
         "packagesPath": "C:\\Users\\Dawn\\.nuget\\packages\\",
-        "outputPath": "E:\\C#\\Shop\\Shop\\obj\\",
+        "outputPath": "D:\\C#\\Shop\\Shop\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Dawn\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -93,7 +93,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     }
