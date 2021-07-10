@@ -48,6 +48,7 @@ namespace Shop.Controllers
             return CreatedAtRoute(nameof(GetBill), new { id = billReadDto.Id }, billReadDto);
         }
 
+        [Authorize]
         [HttpGet("billDetails/{billId}")]
         public ActionResult<IEnumerable<BillDetailsReadDto>> getBillDetails(int billId)
         {
@@ -75,7 +76,7 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
         }
 
-//        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("state/{state}")]
         public ActionResult<IEnumerable<BillReadDto>> GetBillsByStateForAdmin(int state)
         {
@@ -83,6 +84,7 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("phone/{phone}")]
         public ActionResult<IEnumerable<BillReadDto>> GetBillsByPhone(String phone)
         {
@@ -90,7 +92,7 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
         }
 
-        //        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPatch("state")]
         public ActionResult ChangesState(int billId, int state)
         {
@@ -99,6 +101,7 @@ namespace Shop.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPatch("isPay")]
         public ActionResult isPay(int billId, Boolean isPay)
         {

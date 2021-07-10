@@ -34,7 +34,7 @@ namespace Shop.Controllers
             _mapper = mapper;
         }
 
-        //        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult<IEnumerable<UserReadDto>> GetUsers()
         {
@@ -42,7 +42,7 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<UserReadDto>>(users));
         }
 
-        //        [Authorize]
+        [Authorize]
         [HttpGet("{id}", Name = "GetUser")]
         public ActionResult GetUser(int id)
         {
