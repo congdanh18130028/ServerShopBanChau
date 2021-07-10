@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Firebase.Auth;
 using Firebase.Storage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -90,6 +91,7 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(products));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("category")]
         public ActionResult AddCategory(String categoryName)
         {
@@ -132,6 +134,7 @@ namespace Shop.Controllers
             return NotFound($"Product with id: {id} was not found");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("img")]
         public async Task<ActionResult> AddImg([FromForm] FileUpload file)
         {
@@ -189,6 +192,7 @@ namespace Shop.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromForm]String name, [FromForm]String category, [FromForm]FileUpload file, [FromForm]String description, [FromForm]int quantity, [FromForm]int price)
         {
@@ -260,6 +264,7 @@ namespace Shop.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}")]
         public ActionResult UpdateProduct(int id, [FromBody] JsonPatchDocument<ProductUpdateDto> patch)
         {
@@ -280,6 +285,7 @@ namespace Shop.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("img/{id}")]
         public ActionResult UpdateImgProduct(int id, [FromForm]String link)
         {
@@ -288,7 +294,7 @@ namespace Shop.Controllers
             return NoContent();
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public ActionResult DeleteProduct(int id)
         {

@@ -79,6 +79,32 @@ namespace Shop.Services
             return bill;
         }
 
+        public List<BillDetails> getBillDetails(int billId)
+        {
+            var billDetails = _context.BillDetails.Where(b => b.BillId == billId).ToList();
+            return billDetails;
+        }
+
+        public List<Bill> GetBillsByPhone(String phone)
+        {
+            var result = (from b in _context.Bills
+                         join u in _context.Users
+                         on b.UserId equals u.Id
+                         where u.Phone == phone
+                         select new Bill()
+                         {
+                             Id = b.Id,
+                             Date = b.Date,
+                             UserId = b.UserId,
+                             TotalPrice = b.TotalPrice,
+                             State = b.State,
+                             IsPay = b.IsPay,
+
+                         }).ToList();
+
+            return result;
+        }
+
         public List<Bill> GetBillsByState(int userId, int state)
         {
             if(userId ==0)

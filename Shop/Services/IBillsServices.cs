@@ -17,5 +17,7 @@ namespace Shop.Services
         public void ChangesPay(int billId, Boolean isPay);
         public void AddBillDetails(int billId, List<CartItem> cartItems);
         public void SaveChanges();
+        public List<BillDetails> getBillDetails(int billId);
+        public List<Bill> GetBillsByPhone(String phone);
     }
 }

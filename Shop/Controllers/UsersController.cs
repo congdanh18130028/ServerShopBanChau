@@ -10,6 +10,9 @@ using Shop.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.Controllers
@@ -31,7 +34,7 @@ namespace Shop.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
+        //        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult<IEnumerable<UserReadDto>> GetUsers()
         {
@@ -39,8 +42,8 @@ namespace Shop.Controllers
             return Ok(_mapper.Map<IEnumerable<UserReadDto>>(users));
         }
 
-        [Authorize]
-        [HttpGet("{id}", Name ="GetUser")]
+        //        [Authorize]
+        [HttpGet("{id}", Name = "GetUser")]
         public ActionResult GetUser(int id)
         {
             var user = _usersServices.GetUser(id);
@@ -66,8 +69,8 @@ namespace Shop.Controllers
         public ActionResult AddUser(UserCreateDto user)
         {
             var _user = _mapper.Map<User>(user);
-           _usersServices.AddUser(_user);
-           _usersServices.SaveChanges();
+            _usersServices.AddUser(_user);
+            _usersServices.SaveChanges();
             var userReadDto = _mapper.Map<UserReadDto>(_user);
             _cartServices.CreateCart(userReadDto.Id);
             _cartServices.SaveChanges();
@@ -122,7 +125,7 @@ namespace Shop.Controllers
             var _user = _usersServices.GetUser(id);
             if (_user == null)
             {
-            return NotFound($"Customer with id: {id} was not found");
+                return NotFound($"Customer with id: {id} was not found");
             }
             _cartServices.DropCart(_user.Id);
             _cartServices.SaveChanges();
@@ -131,6 +134,72 @@ namespace Shop.Controllers
             return NoContent();
         }
 
+
+        [HttpGet("forgotPassword/{email}")]
+        public ActionResult getOTP(String email)
+        {
+
+            string sOTP = String.Empty;
+
+            string sTempChars = String.Empty;
+
+            Random rand = new Random();
+
+            string[] saAllowedCharacters = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+
+
+            for (int i = 0; i < 6; i++)
+
+            {
+
+                int p = rand.Next(0, saAllowedCharacters.Length);
+
+                sTempChars = saAllowedCharacters[rand.Next(0, saAllowedCharacters.Length)];
+
+                sOTP += sTempChars;
+
+            }
+
+
+            StringBuilder hash = new StringBuilder();
+            MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
+            byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(sOTP));
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                hash.Append(bytes[i].ToString("x2"));
+            }
+
+            var user = _usersServices.GetUserByEmail(email);
+
+            user.Password = hash.ToString();
+
+
+            _usersServices.UpdateUser(user);
+            _usersServices.SaveChanges();
+
+
+
+            string subject = "ShopBanChau";
+            string body = "Your password: "+ sOTP;
+            string FromMail = "congdanh04092000@gmail.com";
+            string emailTo = email;
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(FromMail);
+            mail.To.Add(emailTo);
+            mail.Subject = subject;
+            mail.Body = body;
+            mail.IsBodyHtml = false;
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            SmtpServer.UseDefaultCredentials = false;
+            SmtpServer.Port = 587;
+            SmtpServer.EnableSsl = true;
+            SmtpServer.Credentials = new System.Net.NetworkCredential("congdanh04092000@gmail.com", "danh123###");
+
+            SmtpServer.Send(mail);
+
+            return NoContent();
+        }
 
 
     }
