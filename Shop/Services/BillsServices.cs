@@ -85,25 +85,11 @@ namespace Shop.Services
             return billDetails;
         }
 
-        public List<Bill> GetBillsByPhone(String phone)
+        public List<Bill> GetBills()
         {
-            var result = (from b in _context.Bills
-                         join u in _context.Users
-                         on b.UserId equals u.Id
-                         where u.Phone == phone
-                         select new Bill()
-                         {
-                             Id = b.Id,
-                             Date = b.Date,
-                             UserId = b.UserId,
-                             TotalPrice = b.TotalPrice,
-                             State = b.State,
-                             IsPay = b.IsPay,
-
-                         }).ToList();
-
-            return result;
+           return _context.Bills.ToList();
         }
+
 
         public List<Bill> GetBillsByState(int userId, int state)
         {
@@ -119,6 +105,30 @@ namespace Shop.Services
         {
             var list = _context.Bills.Where(b => b.State == state).ToList();
             return list;
+        }
+
+        public List<Bill> GetBillsDate(DateTime date1, DateTime date2)
+        {
+            var _list = _context.Bills.Where(b => b.Date >= date1 && b.Date <= date2).ToList();
+            return _list;
+        }
+
+        public List<Bill> GetBillsDateState(int state, DateTime date1, DateTime date2)
+        {
+            var _list = _context.Bills.Where(b => b.Date >= date1 && b.State == state || b.Date <= date2 && b.State == state).ToList();
+            return _list;
+        }
+
+        public List<Bill> GetBillsNoPay(DateTime date1, DateTime date2)
+        {
+            var _list = _context.Bills.Where(b => b.Date >= date1 && b.IsPay == false || b.Date <= date2 && b.IsPay == false).ToList();
+            return _list;
+        }
+
+        public List<Bill> GetBillsPay(DateTime date1, DateTime date2)
+        {
+            var _list = _context.Bills.Where(b => b.Date >= date1 && b.IsPay == true || b.Date <= date2 && b.IsPay == true).ToList();
+            return _list;
         }
 
         public void SaveChanges()

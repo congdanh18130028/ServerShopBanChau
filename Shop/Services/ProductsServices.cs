@@ -37,6 +37,32 @@ namespace Shop.Services
             _context.FilePaths.AddRange(product.ImgPath);
         }
 
+        public bool Check(int id, int quantity)
+        {
+            var _product = GetProduct(id);
+            if (_product.Quantity - quantity >= 0)
+            {
+                return true;
+            }else
+            {
+                return false;
+            }
+
+            
+        }
+
+        public void decreaseProduct(int id, int quantity)
+        {
+            var _product = GetProduct(id);
+            if(_product.Quantity - quantity >= 0)
+            {
+                _product.Quantity = _product.Quantity - quantity;
+            }
+            
+            UppdateProduct(_product);
+
+        }
+
         public void DeleteProduct(Product product)
         {
             if (product == null)

@@ -16,6 +16,8 @@ namespace Shop.Services
         {
             _context = context;
         }
+
+        
         public void AddItem(CartItem item)
         {
             if (item == null)

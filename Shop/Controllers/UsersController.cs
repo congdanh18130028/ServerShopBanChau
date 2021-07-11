@@ -92,6 +92,9 @@ namespace Shop.Controllers
             _usersServices.AddUser(_user);
             _usersServices.SaveChanges();
             var userReadDto = _mapper.Map<UserReadDto>(_user);
+            _cartServices.CreateCart(userReadDto.Id);
+            _cartServices.SaveChanges();
+            
             return CreatedAtRoute(nameof(GetUser), new { id = userReadDto.Id }, userReadDto);
         }
 

@@ -25,5 +25,7 @@ namespace Shop.Services
         public void AddCaterory(Category category);
         public List<Category> GetCategories();
         public void UpadateImgProduct(int id, string link);
+        public void decreaseProduct(int id, int quantity);
+        public Boolean Check(int id, int quantity);
     }
 }

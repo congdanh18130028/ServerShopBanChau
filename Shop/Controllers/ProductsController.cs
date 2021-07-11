@@ -40,6 +40,7 @@ namespace Shop.Controllers
             _env = env;
         }
 
+
         [HttpGet]
         public ActionResult <IEnumerable<ProductReadDto>> GetProducts()
         {

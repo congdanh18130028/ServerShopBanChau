@@ -18,6 +18,10 @@ namespace Shop.Services
         public void AddBillDetails(int billId, List<CartItem> cartItems);
         public void SaveChanges();
         public List<BillDetails> getBillDetails(int billId);
-        public List<Bill> GetBillsByPhone(String phone);
+        public List<Bill> GetBills();
+        public List<Bill> GetBillsDate(DateTime date1, DateTime date2);
+        public List<Bill> GetBillsDateState(int state, DateTime date1, DateTime date2);
+        public List<Bill> GetBillsPay(DateTime date1, DateTime date2);
+        public List<Bill> GetBillsNoPay(DateTime date1, DateTime date2);
     }
 }

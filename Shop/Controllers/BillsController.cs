@@ -18,11 +18,14 @@ namespace Shop.Controllers
     {
         private readonly IBillsServices _billsServices;
         private readonly ICartServices _cartServices;
+        private readonly IProductsServices _productsServices;
         private readonly IMapper _mapper;
-        public BillsController(IBillsServices billsServices, ICartServices cartServices, IMapper mapper)
+        public BillsController(IBillsServices billsServices, ICartServices cartServices, IProductsServices productsServices,
+            IMapper mapper)
         {
             _billsServices = billsServices;
             _cartServices = cartServices;
+            _productsServices = productsServices;
             _mapper = mapper;
         }
 
@@ -30,22 +33,49 @@ namespace Shop.Controllers
         [HttpPost]
         public ActionResult AddBill(BillCreateDto bill)
         {
+            Boolean check = true;
+
             var _bill = _mapper.Map<Bill>(bill);
-            _billsServices.AddBill(_bill);
-            _billsServices.SaveChanges();
-            var billReadDto = _mapper.Map<BillReadDto>(_bill);
-
-            int billId = billReadDto.Id;
-            var cartId = _cartServices.getCartId(billReadDto.UserId);
-
+            var cartId = _cartServices.getCartId(_bill.UserId);
             var cartItems = _cartServices.GetItems(cartId);
-            _billsServices.AddBillDetails(billId, cartItems);
-            _billsServices.SaveChanges();
 
-            _cartServices.ClearCartItems(cartId);
-            _billsServices.SaveChanges();
+            foreach (CartItem i in cartItems)
+            {
+                if(!_productsServices.Check(i.ProductId, i.Quantity))
+                {
+                    check = false;
+                }
+                
+            }
 
-            return CreatedAtRoute(nameof(GetBill), new { id = billReadDto.Id }, billReadDto);
+            if (check)
+            {
+                _billsServices.AddBill(_bill);
+                _billsServices.SaveChanges();
+                var billReadDto = _mapper.Map<BillReadDto>(_bill);
+
+                int billId = billReadDto.Id;
+
+                _billsServices.AddBillDetails(billId, cartItems);
+                _billsServices.SaveChanges();
+
+                foreach (CartItem i in cartItems)
+                {
+                    _productsServices.decreaseProduct(i.ProductId, i.Quantity);
+                    _productsServices.SaveChanges();
+                }
+
+                _cartServices.ClearCartItems(cartId);
+                _billsServices.SaveChanges();
+
+                return CreatedAtRoute(nameof(GetBill), new { id = billReadDto.Id }, billReadDto);
+            }else
+            {
+
+                return NoContent();
+            }
+
+           
         }
 
         [Authorize]
@@ -69,7 +99,7 @@ namespace Shop.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("user")]
         public ActionResult<IEnumerable<BillReadDto>> GetBillsByState(int userId, int state)
         {
             var list = _billsServices.GetBillsByState(userId, state);
@@ -85,12 +115,45 @@ namespace Shop.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("phone/{phone}")]
-        public ActionResult<IEnumerable<BillReadDto>> GetBillsByPhone(String phone)
+        [HttpGet("all")]
+        public ActionResult<IEnumerable<BillReadDto>> GetBills()
         {
-            var list = _billsServices.GetBillsByPhone(phone);
+            var list = _billsServices.GetBills();
             return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all-date")]
+        public ActionResult<IEnumerable<BillReadDto>> GetBillsDate(DateTime date1, DateTime date2)
+        {
+            var list = _billsServices.GetBillsDate(date1, date2);
+            return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all-date-state")]
+        public ActionResult<IEnumerable<BillReadDto>> GetBillsDateState(int state, DateTime date1, DateTime date2)
+        {
+            var list = _billsServices.GetBillsDateState(state, date1, date2);
+            return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("pay")]
+        public ActionResult GetBillsPay(DateTime date1, DateTime date2)
+        {
+            var list = _billsServices.GetBillsPay(date1, date2);
+            return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("noPay")]
+        public ActionResult GetBillsNoPay(DateTime date1, DateTime date2)
+        {
+            var list = _billsServices.GetBillsNoPay(date1, date2);
+            return Ok(_mapper.Map<IEnumerable<BillReadDto>>(list));
+        }
+
 
         [Authorize]
         [HttpPatch("state")]
