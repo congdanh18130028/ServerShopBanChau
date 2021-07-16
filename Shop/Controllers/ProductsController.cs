@@ -141,26 +141,9 @@ namespace Shop.Controllers
         {
             var fileUpload = file.File;
             var _link = "";
-            FileStream fs = null;
             if (fileUpload.Length > 0)
             {
-                String foldername = "firebaseFiles";
-                String path = Path.Combine(_env.WebRootPath, $"images/{foldername}");
-                if (Directory.Exists(path))
-                {
-                    using (fs = new FileStream(Path.Combine(path, fileUpload.FileName), FileMode.Create))
-                    {
-                        await fileUpload.CopyToAsync(fs);
-                    }
-                    fs = new FileStream(Path.Combine(path, fileUpload.FileName), FileMode.Open);
-
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-
+              
                 var auth = new FirebaseAuthProvider(new FirebaseConfig(apiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
 
@@ -174,7 +157,7 @@ namespace Shop.Controllers
                     })
                     .Child("assets")
                     .Child($"{fileUpload.FileName}.{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")}")
-                    .PutAsync(fs, cancellation.Token);
+                    .PutAsync(fileUpload.OpenReadStream(), cancellation.Token);
                 try
                 {
                     _link = await upload;
@@ -207,25 +190,25 @@ namespace Shop.Controllers
             var _price = price;
 
             var fileUpload = file.File;
-            FileStream fs = null;
             if (fileUpload.Length > 0)
             {
-                String foldername = "firebaseFiles";
-                String path = Path.Combine(_env.WebRootPath, $"images/{foldername}");
-                if (Directory.Exists(path))
-                {
-                    using (fs = new FileStream(Path.Combine(path, fileUpload.FileName), FileMode.Create))
-                    {
-                        await fileUpload.CopyToAsync(fs);
-                    }
-                    fs = new FileStream(Path.Combine(path, fileUpload.FileName), FileMode.Open);
+                //String foldername = "firebaseFiles";
+                //String path = Path.Combine(_env.WebRootPath, $"images/{foldername}");
+                //if (Directory.Exists(path))
+                //{
+                //    using (fs = new filestream(path.combine(path, fileupload.filename), filemode.create))
+                //    {
+                //        await fileupload.copytoasync(fs);
+                //    }
+                //    fs = new filestream(path.combine(path, fileupload.filename), filemode.open);
 
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                }
+                //    fs = new FileStream(file.File.FileName, FileMode.Open);
 
+                //}
+                //else
+                //{
+                //    Directory.CreateDirectory(path);
+                //}
 
                 var auth = new FirebaseAuthProvider(new FirebaseConfig(apiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
@@ -240,11 +223,11 @@ namespace Shop.Controllers
                     })
                     .Child("assets")
                     .Child($"{fileUpload.FileName}.{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")}")
-                    .PutAsync(fs, cancellation.Token);
+                    .PutAsync(fileUpload.OpenReadStream(), cancellation.Token);
                 try
                 {
                     _link = await upload;
-                    
+
                     var filePath = new FilePath(_link);
                     List<FilePath> listFilePath = new List<FilePath>();
                     listFilePath.Add(filePath);
@@ -290,9 +273,16 @@ namespace Shop.Controllers
         [HttpPatch("img/{id}")]
         public ActionResult UpdateImgProduct(int id, [FromForm]String link)
         {
-            _productsServices.UpadateImgProduct(id, link);
-            _productsServices.SaveChanges();
-            return NoContent();
+            if (link != null)
+            {
+                _productsServices.UpadateImgProduct(id, link);
+                _productsServices.SaveChanges();
+                return NoContent();
+            }else
+            {
+                return BadRequest();
+            }
+            
         }
 
         [Authorize(Roles = "Admin")]

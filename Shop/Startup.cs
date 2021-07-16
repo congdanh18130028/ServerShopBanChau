@@ -31,10 +31,8 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             // xac thuc bang jwt
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials().Build());
-            });
+            services.AddCors();
+
             // add controller
             services.AddControllers().AddNewtonsoftJson();
             // xac thuc bang jwt
@@ -72,6 +70,13 @@ namespace Shop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseCors(x => x
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .SetIsOriginAllowed(origin => true) // allow any origin
+          .AllowCredentials()); // allow credentials
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
