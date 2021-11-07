@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
 namespace Shop
 {
     public class Startup
@@ -32,7 +33,6 @@ namespace Shop
         {
             // xac thuc bang jwt
             services.AddCors();
-
             // add controller
             services.AddControllers().AddNewtonsoftJson();
             // xac thuc bang jwt
@@ -70,12 +70,14 @@ namespace Shop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+   
             app.UseCors(x => x
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .SetIsOriginAllowed(origin => true) // allow any origin
-          .AllowCredentials()); // allow credentials
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+
+           .SetIsOriginAllowed(origin => true) // allow any origin
+           .AllowCredentials());
+            // allow credentials
 
             if (env.IsDevelopment())
             {

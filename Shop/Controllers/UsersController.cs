@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    
     [Route("api/[controller]")]
     [ApiController]
 
@@ -175,6 +175,7 @@ namespace Shop.Controllers
 
             var user = _usersServices.GetUserByEmail(email);
 
+
             user.Password = hash.ToString();
 
 
@@ -197,7 +198,7 @@ namespace Shop.Controllers
             SmtpServer.UseDefaultCredentials = false;
             SmtpServer.Port = 587;
             SmtpServer.EnableSsl = true;
-            SmtpServer.Credentials = new System.Net.NetworkCredential("congdanh04092000@gmail.com", "danh123###");
+            SmtpServer.Credentials = new System.Net.NetworkCredential("congdanh04092000@gmail.com", "*******");
 
             SmtpServer.Send(mail);
 

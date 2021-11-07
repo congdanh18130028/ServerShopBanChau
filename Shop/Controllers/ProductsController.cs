@@ -2,6 +2,7 @@
 using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -20,6 +21,7 @@ namespace Shop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ProductsController : ControllerBase
     {
 
@@ -176,6 +178,7 @@ namespace Shop.Controllers
             return BadRequest();
         }
 
+        
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromForm]String name, [FromForm]String category, [FromForm]FileUpload file, [FromForm]String description, [FromForm]int quantity, [FromForm]int price)
